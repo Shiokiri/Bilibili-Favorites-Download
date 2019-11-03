@@ -21,9 +21,9 @@
 
 ## 效果
 
-![i1](https://github.com/ColorfulMist/Bilibili-Favorites-Download/tree/master/images/1.png)
+![i1](https://github.com/ColorfulMist/Bilibili-Favorites-Download/blob/master/images/1.png)
 
-![i2](https://github.com/ColorfulMist/Bilibili-Favorites-Download/tree/master/images/2.png)
+![i2](https://github.com/ColorfulMist/Bilibili-Favorites-Download/blob/master/images/2.png)
 
 ## 使用
 
@@ -50,7 +50,3 @@
 因为release在国内下载不方便，所以我将exe一并上传至repo了
 
 打开exe文件后输入bilibili账号的uid
-
-## 开发计划
-
-制作使用PyQt5的窗口程序，并开发选择保存文件路径，选择两种输出方式的功能。
