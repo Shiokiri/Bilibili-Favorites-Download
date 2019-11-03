@@ -78,7 +78,6 @@ def getInvalidVideoInfo(video_id, Info):
     while biliplusApiCnt / ((time.clock() - runTime) / 60.0) >= 5: time.sleep(1)
     url = 'https://www.biliplus.com/api/view?id={vid}'.format(vid = video_id)
     InvVideoInfo = getJsonUrl(url)
-    time.sleep(0.03)
     if 'code' in InvVideoInfo:
         print('视频编号:#%d  [已失效][BiliplusApi数据缺失]  AV号:%d  视频标题:已失效视频' % (aFavVideoCnt, video_id))
         print('封面图片:%s' % (Info['pic']))

@@ -90,9 +90,9 @@ def start(): # for cmd
     global totVideoNum
     logging.basicConfig(level=logging.DEBUG)
     if sys.getdefaultencoding() == 'ascii':
-        sys.stdout = open("FavoriteVideoList.txt", "w", encoding = 'gb2312')
+        sys.stdout = open("FavoriteVideoList.csv", "w", encoding = 'gb2312')
     else:
-        sys.stdout = open("FavoriteVideoList.txt", "w", encoding = 'utf-8')
+        sys.stdout = open("FavoriteVideoList.csv", "w", encoding = 'utf-8')
     initUid()
     runTime = time.clock()
     getFavoriteList(bilibili_uid)

@@ -11,15 +11,23 @@
 
 项目仍在开发中，目前仅完成`data.py`和`data_csv.py`部分。
 
-这是一个用于下载bilibili弹幕视频网站个人收藏夹信息的爬虫，数据来源是bilibili官方网站的api和biliplus网站的api，目前支持保存成txt文本文件和可以使用Excel打开的csv逗号分隔符文件，会保存尽量多的信息种类，如有需求，可以自行对照api返回的信息进行修改。
+这是一个用于下载bilibili弹幕视频网站个人收藏夹信息的爬虫，数据来源是bilibili网站的api数据和biliplus网站的api数据，支持保存成txt文本文件和可以使用Excel打开的csv逗号分隔符文件。
+
+为了恢复失效视频，尝试使用biliplus的api获取标题和封面图片，因为biliplus的api要求一分钟访问量不大于5次，所以不得不在查询失效视频时人为限制了速度。
 
 这个项目的原始动力是我自己的的需求，如果在使用中遇到了困难和bug以及有对项目的意见，欢迎在Issues中提出，我将提供帮助和不断改进。
 
-如果这个项目帮助了你，欢迎Star，您的Star是我继续维护与开发的动力。
+如果这个项目帮助到了你，欢迎点个Star资瓷一下。
+
+## 效果
+
+![i1](https://github.com/ColorfulMist/Bilibili-Favorites-Download/tree/master/images/1.png)
+
+![i2](https://github.com/ColorfulMist/Bilibili-Favorites-Download/tree/master/images/2.png)
 
 ## 使用
 
-请首先将您需要爬取信息的bilibili收藏夹设为公开
+请首先将您需要获取信息的bilibili收藏夹设为公开
 
 ### 使用python源代码
 
@@ -29,7 +37,7 @@
 
 `data_csv.py`是输出csv文件的代码
 
-在命令行下输入`python data.py`后
+在命令行下切换到代码文件目录，输入`python data.py`运行代码
 
 输入你的bilibili账号的uid，uid是web端个人主页网址url末尾的数字，或者可以自行查看bilibili个人信息
 
@@ -39,8 +47,9 @@
 
 在release中提供`data.exe`及`data_csv.exe`
 
-打开exe文件后输入bilibili账号的uid
+因为release在国内下载不方便，所以我将exe一并上传至repo了
 
+打开exe文件后输入bilibili账号的uid
 
 ## 开发计划
 
