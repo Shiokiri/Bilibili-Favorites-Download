@@ -1,12 +1,15 @@
 from urllib.request import urlopen
 import json
 import re
+import time
+import sys
+import logging
 # -*- coding: UTF-8 -*-
 
 bilibili_uid = 0
-Favorite_id = []
-Favorite_name = []
-Fav_tot = 0
+aFavVideoCnt = 0
+totVideoCnt = 0
+totVideoNum = 0
 
 def initUid():
     global bilibili_uid
@@ -18,23 +21,20 @@ def getJsonUrl(url):
     return jsonData
 
 def getFavoriteList(uid):
-    global Favorite_id, Favorite_name, Fav_tot
+    global totVideoNum
     favoriteListUrl = 'https://api.bilibili.com/x/space/fav/nav?mid={uid}&jsonp=jsonp'.format(uid=uid)
     favoriteListData = getJsonUrl(favoriteListUrl)
     listInfo = favoriteListData['data']['archive']
-    Fav_tot = len(listInfo)
-    for i in range(0, Fav_tot):
-        Favorite_id.append(listInfo[i]['fid'])
-        Favorite_name.append(listInfo[i]['name'])
-        print('收藏夹编号:%d fid:%d 名称:%s 视频数量:%d\n' % (i+1, Favorite_id[i] ,Favorite_name[i], listInfo[i]['cur_count']))
-        getFavListVideo(uid, Favorite_id[i])
-
-aFavCnt = 0
-totVideoCnt = 0
+    favNum = len(listInfo)
+    for i in range(0, favNum):
+        totVideoNum += listInfo[i]['cur_count']
+    for i in range(0, favNum):
+        print('收藏夹编号:#%d 名称:%s 视频数量:%d\n' % (i+1, listInfo[i]['name'], listInfo[i]['cur_count']))
+        getFavListVideo(uid, listInfo[i]['fid'])
 
 def getFavListVideo(uid, fid):
-    global aFavCnt, totVideoCnt
-    aFavCnt = 0
+    global aFavVideoCnt, totVideoCnt, totVideoNum
+    aFavVideoCnt = 0
     favPageUrl = 'https://api.bilibili.com/x/space/fav/arc?vmid={uid}&ps=30&fid={fid}&tid=0&keyword=&pn={page}&order=fav_time&jsonp=jsonp'.format(uid=uid,fid=fid,page=1)
     favPageDate = getJsonUrl(favPageUrl)
     printVideoInfo(favPageDate['data']['archives'])
@@ -43,62 +43,63 @@ def getFavListVideo(uid, fid):
         favPageUrl = 'https://api.bilibili.com/x/space/fav/arc?vmid={uid}&ps=30&fid={fid}&tid=0&keyword=&pn={page}&order=fav_time&jsonp=jsonp'.format(uid=uid,fid=fid,page=i)
         favPageDate = getJsonUrl(favPageUrl)
         printVideoInfo(favPageDate['data']['archives'])
-    totVideoCnt += aFavCnt
 
-def printVideoInfo(aPageInfo):
-    global aFavCnt
-    for i in range(0, len(aPageInfo)):
-        aFavCnt += 1
-        video_id = aPageInfo[i]['aid']
-        if aPageInfo[i]['title'] == '已失效视频':
-            gitInvalidVideoInfo(video_id, aPageInfo[i])
-        else:
-            InvData = bilibiliVideoApi(video_id)
-            print('视频编号：%d  AV号：%d  视频标题:%s' % (aFavCnt, aPageInfo[i]['aid'],aPageInfo[i]['title']))
-            # print('封面图片:%s' % ())
-
-
-def gitInvalidVideoInfo(video_id, Info):
-    global aFavCnt
-    url = 'https://www.biliplus.com/api/view?id={vid}'.format(vid=video_id)
-    InvVideoInfo = getJsonUrl(url)
-    if 'code' in InvVideoInfo:
-        print('[已失效][BiliplusApi数据缺失] 视频编号：%d  AV号：%d  视频标题:已失效视频' % (aFavCnt, video_id))
-        print('数据最后获取日期:%s' % (Info['lastupdate']))
-        print('描述:%s' % (Info['desc']))
-        print('封面图片:%s' % (Info['pic']))
-        print('分区:%s' % (Info['tname']))
-        print('标签:%s' % (Info['dynamic']))
-        print('up主用户名:%s up主uid:%s' % (Info['owner']['name'], Info['owner']['mid']))
-        print('投稿时间:%s' % (Info['ctime']))
-        print('播放:%s 弹幕:%s 回复:%s 收藏:%s 硬币:%s 分享:%s 喜欢:%s' % (Info['v2_app_api']['stat']['view'], Info['v2_app_api']['stat']['danmaku'], Info['v2_app_api']['stat']['reply'], Info['v2_app_api']['stat']['favorite'], Info['v2_app_api']['stat']['coin'], Info['v2_app_api']['stat']['share'], InvVideoInfo['v2_app_api']['stat']['like'],))
-        print('收藏日期%s' % (Info['fav_at']))
-        print()
-        input()
-        return
-    print('[已失效][BiliplusApi获得数据] 视频编号：%d  AV号：%d  视频标题：%s' % (aFavCnt, video_id, InvVideoInfo['title']))
-    print('数据最后获取日期:%s' % (InvVideoInfo['lastupdate']))
-    print('描述:%s' % (InvVideoInfo['description']))
-    print('封面图片:%s' % (InvVideoInfo['pic']))
-    print('分区:%s' % (InvVideoInfo['typename']))
-    print('标签:%s' % (InvVideoInfo['tag']))
-    print('up主用户名:%s up主uid:%s' % (InvVideoInfo['author'], InvVideoInfo['mid']))
-    print('投稿时间:%s' % (InvVideoInfo['created_at']))
-    print('播放:%s 弹幕:%s 回复:%s 收藏:%s 硬币:%s 分享:%s 喜欢:%s' % (InvVideoInfo['v2_app_api']['stat']['view'], InvVideoInfo['v2_app_api']['stat']['danmaku'], InvVideoInfo['v2_app_api']['stat']['reply'], InvVideoInfo['v2_app_api']['stat']['favorite'], InvVideoInfo['v2_app_api']['stat']['coin'], InvVideoInfo['v2_app_api']['stat']['share'], InvVideoInfo['v2_app_api']['stat']['like'],))
-    print('收藏日期%s' % (Info['fav_at']))
+def printInfo(Info):
+    print('投稿时间:' + time.strftime("%Y-%m-%d-%H:%M:%S", time.gmtime(Info['pubdate'])))
+    print('描述:%s' % (Info['desc']))
+    print('分区:%s' % (Info['tname']))
+    print('标签:%s' % (Info['dynamic']))
+    print('up主用户名:%s  up主uid:%s' % (Info['owner']['name'], Info['owner']['mid']))
+    print('播放:%s  弹幕:%s  回复:%s  收藏:%s  硬币:%s  分享:%s  喜欢:%s' % (Info['stat']['view'], Info['stat']['danmaku'], Info['stat']['reply'], Info['stat']['favorite'], Info['stat']['coin'], Info['stat']['share'], Info['stat']['like'],))
+    print('收藏时间:' + time.strftime("%Y-%m-%d-%H:%M:%S", time.gmtime(Info['fav_at'])))
     print()
 
-def bilibiliVideoApi(video_id):
-    url = 'https://api.bilibili.com/x/article/archives?ids={uid}'.format(uid=video_id)
-    videoInfo = getJsonUrl(url)
-    return videoInfo
+def printVideoInfo(aPageInfo):
+    global aFavVideoCnt, totVideoCnt, totVideoNum
+    for i in range(0, len(aPageInfo)):
+        aFavVideoCnt += 1
+        totVideoCnt += 1
+        if totVideoCnt % 10 == 0 or totVideoCnt == totVideoNum: logging.info('已经完成了{num1}/{num2}个视频...'.format(num1 = totVideoCnt,num2 = totVideoNum))
+        Info = aPageInfo[i]
+        video_id = Info['aid']
+        if Info['title'] == '已失效视频':
+            getInvalidVideoInfo(video_id, Info)
+        else:
+            print('视频编号:#%d  AV号:%d  视频标题:%s' % (aFavVideoCnt, Info['aid'], Info['title']))
+            print('封面图片:%s' % (Info['pic']))
+            printInfo(Info)
 
+biliplusApiCnt = 0
+runTime = 0
+
+def getInvalidVideoInfo(video_id, Info):
+    global aFavVideoCnt, biliplusApiCnt, runTime
+    biliplusApiCnt += 1
+    while biliplusApiCnt / ((time.clock() - runTime) / 60.0) >= 5: time.sleep(1)
+    url = 'https://www.biliplus.com/api/view?id={vid}'.format(vid = video_id)
+    InvVideoInfo = getJsonUrl(url)
+    time.sleep(0.03)
+    if 'code' in InvVideoInfo:
+        print('视频编号:#%d  [已失效][BiliplusApi数据缺失]  AV号:%d  视频标题:已失效视频' % (aFavVideoCnt, video_id))
+        print('封面图片:%s' % (Info['pic']))
+        printInfo(Info)
+    else:
+        print('视频编号:#%d  [已失效][BiliplusApi获得标题与封面图片]  AV号:%d  视频标题:%s' % (aFavVideoCnt, video_id, InvVideoInfo['title']))
+        print('封面图片:%s' % (InvVideoInfo['pic']))
+        printInfo(Info)
 
 def start(): # for cmd
+    global totVideoNum, runTime
+    logging.basicConfig(level=logging.DEBUG)
+    if sys.getdefaultencoding() == 'ascii':
+        sys.stdout = open("FavoriteVideoList.txt", "w", encoding = 'gb2312')
+    else:
+        sys.stdout = open("FavoriteVideoList.txt", "w", encoding = 'utf-8')
     initUid()
-    fileWrite = open("FavoriteVideoList.txt", 'w', encoding='utf-8')
+    runTime = time.clock()
     getFavoriteList(bilibili_uid)
-    fileWrite.close()
+    print('你的收藏夹共有%d个视频' % (totVideoNum))
+    logging.info('完事了！')
 
 # def windowMain(Uid, filePath): # for window ui
 
