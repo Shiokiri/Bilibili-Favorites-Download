@@ -22,14 +22,14 @@ def getJsonUrl(url):
 
 def getFavoriteList(uid):
     global totVideoNum
-    favoriteListUrl = 'https://api.bilibili.com/x/space/fav/nav?mid={uid}&jsonp=jsonp'.format(uid=uid)
+    favoriteListUrl = 'https://api.bilibili.com/medialist/gateway/base/created?pn=1&ps=100&up_mid={uid}&is_space=0&jsonp=jsonp'.format(uid=uid)
     favoriteListData = getJsonUrl(favoriteListUrl)
-    listInfo = favoriteListData['data']['archive']
+    listInfo = favoriteListData['data']['list']
     favNum = len(listInfo)
     for i in range(0, favNum):
-        totVideoNum += listInfo[i]['cur_count']
+        totVideoNum += listInfo[i]['media_count']
     for i in range(0, favNum):
-        print('收藏夹编号:#%d 名称:%s 视频数量:%d\n' % (i+1, listInfo[i]['name'], listInfo[i]['cur_count']))
+        print('收藏夹编号:#%d 名称:%s 视频数量:%d\n' % (i+1, listInfo[i]['title'], listInfo[i]['media_count']))
         getFavListVideo(uid, listInfo[i]['fid'])
 
 def getFavListVideo(uid, fid):
@@ -75,7 +75,7 @@ runTime = 0
 def getInvalidVideoInfo(video_id, Info):
     global aFavVideoCnt, biliplusApiCnt, runTime
     biliplusApiCnt += 1
-    while biliplusApiCnt / ((time.clock() - runTime) / 60.0) >= 5: time.sleep(1)
+    while biliplusApiCnt / ((time.time() - runTime) / 60.0) >= 5: time.sleep(1)
     url = 'https://www.biliplus.com/api/view?id={vid}'.format(vid = video_id)
     InvVideoInfo = getJsonUrl(url)
     if 'code' in InvVideoInfo:
@@ -95,7 +95,7 @@ def start(): # for cmd
     else:
         sys.stdout = open("FavoriteVideoList.txt", "w", encoding = 'utf-8')
     initUid()
-    runTime = time.clock()
+    runTime = time.time()
     getFavoriteList(bilibili_uid)
     print('你的收藏夹共有%d个视频' % (totVideoNum))
     logging.info('完事了！')

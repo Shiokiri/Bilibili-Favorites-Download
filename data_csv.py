@@ -23,14 +23,14 @@ def getJsonUrl(url):
 def getFavoriteList(uid):
     global totVideoNum
     print('收藏夹编号,收藏夹名称,收藏夹视频数量,视频编号,AV号,视频状态,视频标题,封面图片,投稿时间,描述,分区,标签,up主用户名,up主uid,播放,弹幕,回复,收藏,硬币,分享,喜欢,收藏时间,')
-    favoriteListUrl = 'https://api.bilibili.com/x/space/fav/nav?mid={uid}&jsonp=jsonp'.format(uid=uid)
+    favoriteListUrl = 'https://api.bilibili.com/medialist/gateway/base/created?pn=1&ps=100&up_mid={uid}&is_space=0&jsonp=jsonp'.format(uid=uid)
     favoriteListData = getJsonUrl(favoriteListUrl)
-    listInfo = favoriteListData['data']['archive']
+    listInfo = favoriteListData['data']['list']
     favNum = len(listInfo)
     for i in range(0, favNum):
-        totVideoNum += listInfo[i]['cur_count']
+        totVideoNum += listInfo[i]['media_count']
     for i in range(0, favNum):
-        favInformation = '#{x1},{x2},{x3}'.format(x1=i+1, x2=listInfo[i]['name'], x3=listInfo[i]['cur_count'])
+        favInformation = '#{x1},{x2},{x3}'.format(x1=i+1, x2=listInfo[i]['title'], x3=listInfo[i]['media_count'])
         getFavListVideo(uid, listInfo[i]['fid'], favInformation)
 
 def printInfo(Info):
@@ -76,7 +76,7 @@ runTime = 0
 def getInvalidVideoInfo(video_id, Info):
     global aFavVideoCnt, biliplusApiCnt, runTime
     biliplusApiCnt += 1
-    while biliplusApiCnt / ((time.clock() - runTime) / 60.0) >= 5: time.sleep(1)
+    while biliplusApiCnt / ((time.time() - runTime) / 60.0) >= 5: time.sleep(1)
     url = 'https://www.biliplus.com/api/view?id={vid}'.format(vid = video_id)
     InvVideoInfo = getJsonUrl(url)
     if 'code' in InvVideoInfo:
@@ -87,14 +87,14 @@ def getInvalidVideoInfo(video_id, Info):
         printInfo(Info)
 
 def start(): # for cmd
-    global totVideoNum
+    global totVideoNum, runTime
     logging.basicConfig(level=logging.DEBUG)
     if sys.getdefaultencoding() == 'ascii':
         sys.stdout = open("FavoriteVideoList.csv", "w", encoding = 'gb2312')
     else:
         sys.stdout = open("FavoriteVideoList.csv", "w", encoding = 'utf-8')
     initUid()
-    runTime = time.clock()
+    runTime = time.time()
     getFavoriteList(bilibili_uid)
     print('你的收藏夹共有%d个视频' % (totVideoNum))
     logging.info('完事了！')
