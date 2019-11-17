@@ -9,8 +9,6 @@
 ![](https://img.shields.io/github/languages/code-size/ColorfulMist/Bilibili-Favorites-Download)
 ![](https://img.shields.io/github/repo-size/ColorfulMist/Bilibili-Favorites-Download)
 
-项目仍在开发中，目前仅完成`data.py`和`data_csv.py`部分。
-
 这是一个用于下载bilibili弹幕视频网站个人收藏夹信息的爬虫，数据来源是bilibili网站的api数据和biliplus网站的api数据，支持保存成txt文本文件和可以使用Excel打开的csv逗号分隔符文件。
 
 为了恢复失效视频，尝试使用biliplus的api获取标题和封面图片，因为biliplus的api要求一分钟访问量不大于5次，所以不得不在查询失效视频时人为限制了速度。
