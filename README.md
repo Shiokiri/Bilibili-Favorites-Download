@@ -19,9 +19,9 @@
 
 ## 效果
 
-![i1](https://github.com/ColorfulMist/Bilibili-Favorites-Download/blob/master/images/1.png)
+![](https://cdn.jsdelivr.net/gh/ShioKiri/cdn/img/1.png)
 
-![i2](https://github.com/ColorfulMist/Bilibili-Favorites-Download/blob/master/images/2.png)
+![](https://cdn.jsdelivr.net/gh/ShioKiri/cdn/img/2.png)
 
 ## 使用
 
