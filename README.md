@@ -9,7 +9,7 @@
 ![](https://img.shields.io/github/languages/code-size/ColorfulMist/Bilibili-Favorites-Download)
 ![](https://img.shields.io/github/repo-size/ColorfulMist/Bilibili-Favorites-Download)
 
-Due to changes in the backend API of bilibili.com, the data_csv.py are waiting to be fixed.
+Due to changes in the backend API of bilibili.com, data_csv.py are waiting to be fixed.
 
 ## Background
 
@@ -29,4 +29,3 @@ python data.py
 python data_csv.py
 # enter the uid
 ```
-
