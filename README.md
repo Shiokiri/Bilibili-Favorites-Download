@@ -9,11 +9,11 @@
 ![](https://img.shields.io/github/languages/code-size/ColorfulMist/Bilibili-Favorites-Download)
 ![](https://img.shields.io/github/repo-size/ColorfulMist/Bilibili-Favorites-Download)
 
-Due to changes in the backend API of bilibili.com, the crawler has expired.
+Due to changes in the backend API of bilibili.com, the data_csv.py are waiting to be fixed.
 
 ## Background
 
-This is a crawler for downloading personal favorites information of the bilibili barrage video website. The data sources are bilibili.com and biliplus.com. It supports saving as txt files and csv files.
+This is a crawler for downloading personal favorites information of "bilibili.com". The data sources are bilibili.com and biliplus.com. It supports saving as txt files and csv files.
 
 ![](https://cdn.jsdelivr.net/gh/ShioKiri/cdn/img/1.png)
 
